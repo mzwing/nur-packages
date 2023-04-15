@@ -18,4 +18,4 @@ in
   overlays = import ./overlays;
 }
   //
-pkgs'.callPackage ./pkgs;
+pkgs'.callPackage ./pkgs
