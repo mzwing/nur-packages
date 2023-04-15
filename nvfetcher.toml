@@ -1,0 +1,4 @@
+[bbg]
+src.github = "bbg-contributors/bbg"
+fetch.url = "https://github.com/bbg-contributors/bbg/releases/download/$ver/app.asar"
+use_latest_release = true

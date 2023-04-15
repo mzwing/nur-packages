@@ -1,0 +1,17 @@
+{
+    "bbg": {
+        "cargoLocks": null,
+        "date": null,
+        "extract": null,
+        "name": "bbg",
+        "passthru": null,
+        "pinned": false,
+        "src": {
+            "name": null,
+            "sha256": "sha256-Gh8XMnMVehVqd6NNWBmFSrsiyp6nmhWEU+qFASJRq/M=",
+            "type": "url",
+            "url": "https://github.com/bbg-contributors/bbg/releases/download/20230219/app.asar"
+        },
+        "version": "20230219"
+    }
+}

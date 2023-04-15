@@ -8,13 +8,18 @@
 
 { pkgs ? import <nixpkgs> { } }:
 
+let
+  inherit (pkgs) lib;
+  overlayList = builtins.attrValues (import ./overlays);
+  pkgs' = lib.foldl (prev: prev.extend) pkgs overlayList;
+  selfLib = import ./lib { inherit (pkgs') lib; };
+in
 {
-  # The `lib`, `modules`, and `overlay` names are special
-  lib = import ./lib { inherit pkgs; }; # functions
-  modules = import ./modules; # NixOS modules
-  overlays = import ./overlays; # nixpkgs overlays
-
-  example-package = pkgs.callPackage ./pkgs/example-package { };
-  # some-qt5-package = pkgs.libsForQt5.callPackage ./pkgs/some-qt5-package { };
-  # ...
+  lib = selfLib;
+  modules = import ./modules;
+  overlays = import ./overlays;
+}
+  //
+pkgs'.callPackage ./pkgs {
+  inherit selfLib;
 }
