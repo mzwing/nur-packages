@@ -25,10 +25,8 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 180
     steps:
-    - name: Checkout default branch
+    - name: Checkout repository
       uses: actions/checkout@v5
-      with:
-        ref: ${{ github.event.repository.default_branch }}
 
     - name: Maximize Nix disk space
       uses: wimpysworld/nothing-but-nix@v10
@@ -69,30 +67,32 @@ jobs:
         rm -f secrets.toml
         trap - EXIT
 
-    - name: Commit and push updates
+    - name: Commit changes
       id: commit
-      env:
-        DEFAULT_BRANCH: ${{ github.event.repository.default_branch }}
       shell: bash
       run: |
         set -euo pipefail
 
-        if [[ -z "$(git status --porcelain)" ]]; then
-          echo 'No package updates found.'
-          echo 'pushed=false' >>"${GITHUB_OUTPUT}"
+        git config user.name 'github-actions[bot]'
+        git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+        git add -- flake.lock _sources pkgs
+
+        if git diff --cached --quiet; then
+          echo 'changed=false' >>"${GITHUB_OUTPUT}"
           exit 0
         fi
 
-        git config user.name 'mzwing-bot'
-        git config user.email 'mzwing-bot@users.noreply.github.com'
-        git add --all
-        git commit -m 'auto: update packages'
-        git push origin "HEAD:${DEFAULT_BRANCH}"
-        echo 'pushed=true' >>"${GITHUB_OUTPUT}"
+        git commit -m 'chore: update packages'
+        echo 'changed=true' >>"${GITHUB_OUTPUT}"
+
+    - name: Push changes
+      if: steps.commit.outputs.changed == 'true'
+      uses: ad-m/github-push-action@master
+      with:
+        branch: ${{ github.ref }}
 
     - name: Trigger distributed package build
-      if: steps.commit.outputs.pushed == 'true'
+      if: steps.commit.outputs.changed == 'true'
       env:
-        DEFAULT_BRANCH: ${{ github.event.repository.default_branch }}
-        GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      run: gh workflow run build.yml --ref "${DEFAULT_BRANCH}"
+        GH_TOKEN: ${{ github.token }}
+      run: gh workflow run build.yml --ref ${{ github.ref }}
