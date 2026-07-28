@@ -63,7 +63,7 @@ rustPlatform.buildRustPackage rec {
     $out/bin/autocli --help >/dev/null
     $out/bin/autocli hackernews --help >/dev/null
 
-    test -f $out/share/bash-completion/completions/autocli
+    test -f $out/share/bash-completion/completions/autocli.bash
     test -f $out/share/zsh/site-functions/_autocli
     test -f $out/share/fish/vendor_completions.d/autocli.fish
     test -f $out/share/doc/autocli/LICENSE
