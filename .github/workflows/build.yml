@@ -116,26 +116,59 @@ jobs:
           fi
         done < <(jq -r '.[] | [.name, .system, .outputName, .outputPath] | @tsv' <<<"${ALL_TARGETS}")
 
+        if ! jq -e '
+          type == "array" and
+          length > 0 and
+          all(.[];
+            (.system | type == "string" and length > 0) and
+            (.idPrefix | type == "string" and test("^[a-z0-9]+(-[a-z0-9]+)*$")) and
+            (.runner | type == "string" and length > 0) and
+            (.count | type == "number" and . > 0 and floor == .) and
+            (.maxJobs | type == "number" and . > 0 and floor == .)
+          ) and
+          (([.[].idPrefix] | length) == ([.[].idPrefix] | unique | length))
+        ' .github/builders.json >/dev/null; then
+          echo 'Invalid .github/builders.json configuration.' >&2
+          exit 1
+        fi
+
+        active_systems="$(jq -c '[.[].system] | unique' <<<"${targets}")"
+        missing_systems="$(
+          jq -cn \
+            --argjson systems "${active_systems}" \
+            --slurpfile pools .github/builders.json '
+              $pools[0] as $config |
+              [
+                $systems[] as $system |
+                select([$config[].system] | index($system) == null) |
+                $system
+              ]
+            '
+        )"
+        if [[ "${missing_systems}" != '[]' ]]; then
+          printf 'No builder pool configured for: %s\n' "$(jq -r 'join(", ")' <<<"${missing_systems}")" >&2
+          exit 1
+        fi
+
         builders="$(
-          jq -cn --argjson targets "${targets}" '
-            {
-              include: (
-                [$targets[].system]
-                | unique
-                | map(
-                    if . == "x86_64-linux" then
-                      {id: "linux-x86-64", runner: "ubuntu-24.04", system: ., maxJobs: 3}
-                    elif . == "aarch64-linux" then
-                      {id: "linux-arm64", runner: "ubuntu-24.04-arm", system: ., maxJobs: 3}
-                    elif . == "aarch64-darwin" then
-                      {id: "darwin-arm64", runner: "macos-15", system: ., maxJobs: 3}
-                    else
-                      error("unsupported system: \(.)")
-                    end
-                  )
-              )
-            }
-          '
+          jq -cn \
+            --argjson systems "${active_systems}" \
+            --slurpfile pools .github/builders.json '
+              $pools[0] as $config |
+              {
+                include: [
+                  $config[] as $pool |
+                  select($systems | index($pool.system)) |
+                  range(1; $pool.count + 1) as $index |
+                  {
+                    id: "\($pool.idPrefix)-\($index)",
+                    runner: $pool.runner,
+                    system: $pool.system,
+                    maxJobs: $pool.maxJobs
+                  }
+                ]
+              }
+            '
         )"
 
         if [[ "${targets}" == '[]' ]]; then
