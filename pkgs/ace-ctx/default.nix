@@ -49,11 +49,12 @@ rustPlatform.buildRustPackage rec {
   '';
 
   meta = {
-    description = "Rust implementation of a codebase context engine that enables AI assistants to search and understand codebases using natural language queries.";
+    description = "Rust implementation of a codebase context engine that enables AI assistants to search and understand codebases using natural language queries";
     homepage = "https://github.com/CodingOX/ace-ctx";
     changelog = "https://github.com/CodingOX/ace-ctx/releases/tag/v${version}";
     license = lib.licenses.gpl3Only;
     mainProgram = "ace-ctx";
+    maintainers = ["mzwing"];
     platforms = [
       "x86_64-linux"
       "aarch64-linux"

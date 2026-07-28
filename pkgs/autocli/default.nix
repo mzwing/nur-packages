@@ -73,11 +73,12 @@ rustPlatform.buildRustPackage rec {
   '';
 
   meta = {
-    description = "AutoCLI is a Blazing fast, memory-safe command-line tool — Fetch information from any website with a single command. Covers Twitter/X, Reddit, YouTube, HackerNews, Bilibili, Zhihu, Xiaohongshu, and 55+ sites, with support for controlling Electron desktop apps, integrating local CLI tools (gh, docker, kubectl), now powered by AutoCLI.ai .";
+    description = "AutoCLI is a Blazing fast, memory-safe command-line tool — Fetch information from any website with a single command. Covers Twitter/X, Reddit, YouTube, HackerNews, Bilibili, Zhihu, Xiaohongshu, and 55+ sites, with support for controlling Electron desktop apps, integrating local CLI tools (gh, docker, kubectl), now powered by AutoCLI.ai";
     homepage = "https://github.com/nashsu/AutoCLI";
     changelog = "https://github.com/nashsu/AutoCLI/releases/tag/v${version}";
     license = lib.licenses.asl20;
     mainProgram = "autocli";
+    maintainers = ["mzwing"];
     platforms = [
       "x86_64-linux"
       "aarch64-linux"
