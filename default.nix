@@ -6,20 +6,19 @@
 # Having pkgs default to <nixpkgs> is fine though, and it lets you use short
 # commands such as:
 #     nix-build -A mypackage
-
-{ pkgs ? import <nixpkgs> { } }:
-
-{
+{pkgs ? import <nixpkgs> {}}: let
+  sources = pkgs.callPackage ./_sources/generated.nix {};
+in {
   # The `lib`, `overlays`, `nixosModules`, `homeModules`,
   # `darwinModules` and `flakeModules` names are special
-  lib = import ./lib { inherit pkgs; }; # functions
+  lib = import ./lib {inherit pkgs;}; # functions
   nixosModules = import ./nixos-modules; # NixOS modules
   # homeModules = { }; # Home Manager modules
   # darwinModules = { }; # nix-darwin modules
   # flakeModules = { }; # flake-parts modules
   overlays = import ./overlays; # nixpkgs overlays
 
-  example-package = pkgs.callPackage ./pkgs/example-package { };
+  autocli = pkgs.callPackage ./pkgs/autocli {source = sources.autocli;};
   # some-qt5-package = pkgs.libsForQt5.callPackage ./pkgs/some-qt5-package { };
   # ...
 }

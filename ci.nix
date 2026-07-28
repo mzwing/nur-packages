@@ -8,49 +8,85 @@
 #
 # then your CI will be able to build and cache only those packages for
 # which this is possible.
+{pkgs ? import <nixpkgs> {}}:
+with builtins; let
+  reservedNames = [
+    "lib"
+    "overlays"
+    "nixosModules"
+    "homeModules"
+    "darwinModules"
+    "flakeModules"
+  ];
 
-{ pkgs ? import <nixpkgs> { } }:
+  isDerivation = value: isAttrs value && value ? type && value.type == "derivation";
+  isFreeLicense = license: !isAttrs license || license.free or true;
+  isBuildable = package: let
+    meta = package.meta or {};
+    license = meta.license or [];
+    licenses =
+      if isList license
+      then license
+      else [license];
+  in
+    pkgs.lib.meta.availableOn pkgs.stdenv.hostPlatform package
+    && !(meta.broken or false)
+    && all isFreeLicense licenses;
+  isCacheable = package: !(package.preferLocalBuild or false);
+  shouldRecurseForDerivations = value: isAttrs value && value.recurseForDerivations or false;
 
-with builtins;
-let
-  isReserved = n: n == "lib" || n == "overlays" || n == "nixosModules" || n == "homeModules" || n == "darwinModules" || n == "flakeModules";
-  isDerivation = p: isAttrs p && p ? type && p.type == "derivation";
-  isBuildable = p: let
-    licenseFromMeta = p.meta.license or [];
-    licenseList = if builtins.isList licenseFromMeta then licenseFromMeta else [licenseFromMeta];
-  in !(p.meta.broken or false) && builtins.all (license: license.free or true) licenseList;
-  isCacheable = p: !(p.preferLocalBuild or false);
-  shouldRecurseForDerivations = p: isAttrs p && p.recurseForDerivations or false;
+  concatMap = builtins.concatMap or (function: values: concatLists (map function values));
 
-  nameValuePair = n: v: { name = n; value = v; };
-
-  concatMap = builtins.concatMap or (f: xs: concatLists (map f xs));
-
-  flattenPkgs = s:
-    let
-      f = p:
-        if shouldRecurseForDerivations p then flattenPkgs p
-        else if isDerivation p then [ p ]
-        else [ ];
+  flattenPkgs = attrPath: packageSet:
+    concatMap
+    (name: let
+      value = packageSet.${name};
+      nestedPath = attrPath ++ [name];
     in
-    concatMap f (attrValues s);
+      if shouldRecurseForDerivations value
+      then flattenPkgs nestedPath value
+      else if isDerivation value
+      then [
+        {
+          inherit (value) outputs;
+          attrPath = nestedPath;
+          package = value;
+        }
+      ]
+      else [])
+    (attrNames packageSet);
 
-  outputsOf = p: map (o: p.${o}) p.outputs;
+  outputsOf = entry:
+    map
+    (outputName: {
+      inherit (entry) attrPath package;
+      inherit outputName;
+      output = entry.package.${outputName};
+    })
+    entry.outputs;
 
-  nurAttrs = import ./default.nix { inherit pkgs; };
+  targetOf = entry: {
+    inherit (entry) attrPath outputName;
+    name = concatStringsSep "." entry.attrPath;
+    system = pkgs.stdenv.hostPlatform.system;
+    outputPath = entry.output.outPath;
+  };
 
-  nurPkgs =
-    flattenPkgs
-      (listToAttrs
-        (map (n: nameValuePair n nurAttrs.${n})
-          (filter (n: !isReserved n)
-            (attrNames nurAttrs))));
+  nurAttrs = import ./default.nix {inherit pkgs;};
+  nurEntries = flattenPkgs [] (removeAttrs nurAttrs reservedNames);
+in rec {
+  buildEntries = filter (entry: isBuildable entry.package) nurEntries;
+  cacheEntries = filter (entry: isCacheable entry.package) buildEntries;
 
-in
-rec {
-  buildPkgs = filter isBuildable nurPkgs;
-  cachePkgs = filter isCacheable buildPkgs;
+  buildPkgs = map (entry: entry.package) buildEntries;
+  cachePkgs = map (entry: entry.package) cacheEntries;
 
-  buildOutputs = concatMap outputsOf buildPkgs;
-  cacheOutputs = concatMap outputsOf cachePkgs;
+  buildOutputEntries = concatMap outputsOf buildEntries;
+  cacheOutputEntries = concatMap outputsOf cacheEntries;
+
+  buildOutputs = map (entry: entry.output) buildOutputEntries;
+  cacheOutputs = map (entry: entry.output) cacheOutputEntries;
+
+  buildTargets = map targetOf buildOutputEntries;
+  cacheTargets = map targetOf cacheOutputEntries;
 }

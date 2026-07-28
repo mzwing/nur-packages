@@ -1,0 +1,92 @@
+name: Update packages
+
+on:
+  schedule:
+    - cron: "13 20 * * *"
+  workflow_dispatch:
+
+permissions:
+  actions: write
+  contents: write
+
+concurrency:
+  group: update-packages
+  cancel-in-progress: false
+
+jobs:
+  update:
+    name: Update package sources and hashes
+    runs-on: ubuntu-latest
+    timeout-minutes: 180
+    steps:
+    - name: Checkout default branch
+      uses: actions/checkout@v5
+      with:
+        ref: ${{ github.event.repository.default_branch }}
+
+    - name: Maximize Nix disk space
+      uses: wimpysworld/nothing-but-nix@v10
+      with:
+        hatchet-protocol: cleave
+
+    - name: Install Nix
+      uses: cachix/install-nix-action@v31
+      with:
+        extra_nix_config: |
+          accept-flake-config = false
+          access-tokens = github.com=${{ secrets.GITHUB_TOKEN }}
+          substituters = https://mzwing.cachix.org https://cache.nixos.org https://nix-community.cachix.org
+          trusted-public-keys = cache.nixos.org-1:6NCHdD59X431o0gWypbMrAURkbJ16ZPMQFGspcDShjY= mzwing.cachix.org-1:tOO3NqAwrXyPCnecEl/0wXwparCRksM5TeuS/wZK+KA= nix-community.cachix.org-1:mB9FSh9qf2dCimDSUo8Zy7bkq5CX+/rkCWyvRCYg3Fs=
+
+    - name: Restore nvfetcher database
+      uses: actions/cache@v4
+      with:
+        path: ~/.local/share/nvfetcher
+        key: nvfetcher-${{ github.sha }}
+        restore-keys: |
+          nvfetcher-
+
+    - name: Update sources and dependency hashes
+      shell: bash
+      run: |
+        set -euo pipefail
+        trap 'rm -f secrets.toml' EXIT
+
+        cat >secrets.toml <<EOF
+        [keys]
+        github = "${{ secrets.GITHUB_TOKEN }}"
+        EOF
+
+        nix run .#update
+        nix run .#update-hashes
+
+        rm -f secrets.toml
+        trap - EXIT
+
+    - name: Commit and push updates
+      id: commit
+      env:
+        DEFAULT_BRANCH: ${{ github.event.repository.default_branch }}
+      shell: bash
+      run: |
+        set -euo pipefail
+
+        if [[ -z "$(git status --porcelain)" ]]; then
+          echo 'No package updates found.'
+          echo 'pushed=false' >>"${GITHUB_OUTPUT}"
+          exit 0
+        fi
+
+        git config user.name 'mzwing-bot'
+        git config user.email 'mzwing-bot@users.noreply.github.com'
+        git add --all
+        git commit -m 'auto: update packages'
+        git push origin "HEAD:${DEFAULT_BRANCH}"
+        echo 'pushed=true' >>"${GITHUB_OUTPUT}"
+
+    - name: Trigger distributed package build
+      if: steps.commit.outputs.pushed == 'true'
+      env:
+        DEFAULT_BRANCH: ${{ github.event.repository.default_branch }}
+        GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      run: gh workflow run build.yml --ref "${DEFAULT_BRANCH}"

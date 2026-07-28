@@ -1,0 +1,4 @@
+[autocli]
+fetch.github = "nashsu/AutoCLI"
+src.github_tag = "nashsu/AutoCLI"
+src.include_regex = "^v[0-9]+\\.[0-9]+\\.[0-9]+$"
