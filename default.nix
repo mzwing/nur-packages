@@ -18,6 +18,7 @@ in {
   # flakeModules = { }; # flake-parts modules
   overlays = import ./overlays; # nixpkgs overlays
 
+  ace-ctx = pkgs.callPackage ./pkgs/ace-ctx {source = sources.ace-ctx;};
   autocli = pkgs.callPackage ./pkgs/autocli {source = sources.autocli;};
   # some-qt5-package = pkgs.libsForQt5.callPackage ./pkgs/some-qt5-package { };
   # ...

@@ -6,6 +6,17 @@
   dockerTools,
 }:
 {
+  ace-ctx = {
+    pname = "ace-ctx";
+    version = "v0.2.4";
+    src = fetchFromGitHub {
+      owner = "CodingOX";
+      repo = "ace-ctx";
+      rev = "v0.2.4";
+      fetchSubmodules = false;
+      sha256 = "sha256-086maWcxEVrB7FUpQCF3TlyiZbtfX959H3Icx5lx96c=";
+    };
+  };
   autocli = {
     pname = "autocli";
     version = "v0.3.8";
