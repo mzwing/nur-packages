@@ -17,6 +17,8 @@ rustPlatform.buildRustPackage rec {
 
   cargoHash = "sha256-EZ/CRVQjGB14HpBjKBRLW9Sj9In7Kp8754E5XiiQYX4=";
 
+  patches = [./fix-download-url-in-data-test.patch];
+
   cargoBuildFlags = [
     "--package"
     "autocli"
