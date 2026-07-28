@@ -4,7 +4,8 @@
   fetchurl,
   fetchFromGitHub,
   dockerTools,
-}: {
+}:
+{
   autocli = {
     pname = "autocli";
     version = "v0.3.8";
@@ -12,7 +13,8 @@
       owner = "nashsu";
       repo = "AutoCLI";
       rev = "v0.3.8";
-      sha256 = "sha256-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=";
+      fetchSubmodules = false;
+      sha256 = "sha256-RXrMGORl1uht22FX1UVATTO1rTPjgMgMozqsAt0dnPE=";
     };
   };
 }

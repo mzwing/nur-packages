@@ -14,7 +14,7 @@ rustPlatform.buildRustPackage rec {
   inherit (source) pname src;
   version = lib.removePrefix "v" source.version;
 
-  cargoHash = "sha256-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=";
+  cargoHash = "sha256-EZ/CRVQjGB14HpBjKBRLW9Sj9In7Kp8754E5XiiQYX4=";
 
   cargoBuildFlags = [
     "--package"
