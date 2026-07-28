@@ -1,6 +1,12 @@
 name: Update packages
 
 on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'pkgs/**'
+      - '.github/workflows/update.yml'
   schedule:
     - cron: "13 20 * * *"
   workflow_dispatch:
