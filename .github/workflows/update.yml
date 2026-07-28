@@ -26,7 +26,7 @@ jobs:
     timeout-minutes: 180
     steps:
     - name: Checkout repository
-      uses: actions/checkout@v5
+      uses: actions/checkout@v7
 
     - name: Maximize Nix disk space
       uses: wimpysworld/nothing-but-nix@v10

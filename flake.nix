@@ -5,7 +5,12 @@
     self,
     nixpkgs,
   }: let
-    forAllSystems = nixpkgs.lib.genAttrs nixpkgs.lib.systems.flakeExposed;
+    supportedSystems = [
+      "x86_64-linux"
+      "aarch64-linux"
+      "aarch64-darwin"
+    ];
+    forAllSystems = nixpkgs.lib.genAttrs supportedSystems;
     mkUpdateApps = system: let
       pkgs = nixpkgs.legacyPackages.${system};
       update = pkgs.writeShellApplication {
@@ -67,10 +72,12 @@
       update = {
         type = "app";
         program = "${update}/bin/update-packages";
+        meta.description = "Update package sources with nvfetcher";
       };
       update-hashes = {
         type = "app";
         program = "${updateHashes}/bin/update-package-hashes";
+        meta.description = "Update package dependency hashes with nix-update";
       };
     };
   in {
@@ -78,8 +85,13 @@
       import ./default.nix {
         pkgs = import nixpkgs {inherit system;};
       });
-    packages = forAllSystems (system: nixpkgs.lib.filterAttrs (_: v: nixpkgs.lib.isDerivation v) self.legacyPackages.${system});
-    apps = forAllSystems mkUpdateApps;
+    packages = forAllSystems (system: let
+      platform = nixpkgs.legacyPackages.${system}.stdenv.hostPlatform;
+    in
+      nixpkgs.lib.filterAttrs
+      (_: package: nixpkgs.lib.isDerivation package && nixpkgs.lib.meta.availableOn platform package)
+      self.legacyPackages.${system});
+    apps.x86_64-linux = mkUpdateApps "x86_64-linux";
     nixosModules = import ./nixos-modules;
     # homeModules = import ./home-modules;
     # darwinModules = import ./darwin-modules;

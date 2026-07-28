@@ -28,7 +28,7 @@ jobs:
       targets: ${{ steps.plan.outputs.targets }}
     steps:
     - name: Checkout repository
-      uses: actions/checkout@v5
+      uses: actions/checkout@v7
 
     - name: Install Nix
       uses: cachix/install-nix-action@v31
@@ -61,7 +61,6 @@ jobs:
               systems = [
                 "x86_64-linux"
                 "aarch64-linux"
-                "x86_64-darwin"
                 "aarch64-darwin"
               ];
               targetsFor = system:
@@ -128,8 +127,6 @@ jobs:
                       {id: "linux-x86-64", runner: "ubuntu-24.04", system: ., maxJobs: 3}
                     elif . == "aarch64-linux" then
                       {id: "linux-arm64", runner: "ubuntu-24.04-arm", system: ., maxJobs: 3}
-                    elif . == "x86_64-darwin" then
-                      {id: "darwin-x86-64", runner: "macos-15-intel", system: ., maxJobs: 3}
                     elif . == "aarch64-darwin" then
                       {id: "darwin-arm64", runner: "macos-15", system: ., maxJobs: 3}
                     else
@@ -223,7 +220,7 @@ jobs:
     timeout-minutes: 360
     steps:
     - name: Checkout repository
-      uses: actions/checkout@v5
+      uses: actions/checkout@v7
 
     - name: Maximize Nix disk space
       if: needs.config.outputs.has_builds == 'true'
