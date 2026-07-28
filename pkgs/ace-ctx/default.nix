@@ -54,7 +54,11 @@ rustPlatform.buildRustPackage rec {
     changelog = "https://github.com/CodingOX/ace-ctx/releases/tag/v${version}";
     license = lib.licenses.gpl3Only;
     mainProgram = "ace-ctx";
-    maintainers = ["mzwing"];
+    maintainers = [
+      {
+        name = "mzwing";
+      }
+    ];
     platforms = [
       "x86_64-linux"
       "aarch64-linux"

@@ -78,7 +78,11 @@ rustPlatform.buildRustPackage rec {
     changelog = "https://github.com/nashsu/AutoCLI/releases/tag/v${version}";
     license = lib.licenses.asl20;
     mainProgram = "autocli";
-    maintainers = ["mzwing"];
+    maintainers = [
+      {
+        name = "mzwing";
+      }
+    ];
     platforms = [
       "x86_64-linux"
       "aarch64-linux"
