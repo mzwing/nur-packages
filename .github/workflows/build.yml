@@ -248,6 +248,7 @@ jobs:
   coordinator:
     name: Distributed build coordinator
     needs: config
+    if: needs.config.outputs.has_builds == 'true'
     runs-on: ubuntu-latest
     timeout-minutes: 360
     steps:
