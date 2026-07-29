@@ -10,7 +10,7 @@ buildGoModule rec {
   inherit (source) pname src;
   version = lib.removePrefix "v" source.version;
 
-  vendorHash = "sha256-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=";
+  vendorHash = "sha256-lERAJk7yzjI5yjXQmXL6iRv3C6yZgfCKkDaLjrnId0o=";
 
   subPackages = ["cmd/server"];
 
