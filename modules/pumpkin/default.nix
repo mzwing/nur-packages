@@ -194,11 +194,13 @@
         umask = "0077";
       };
 
-      account = lib.recursiveUpdate {
-        logicalName = "pumpkin";
-        home = cfg.dataDir;
-        description = "Pumpkin Minecraft server service user";
-      } account;
+      account =
+        lib.recursiveUpdate {
+          logicalName = "pumpkin";
+          home = cfg.dataDir;
+          description = "Pumpkin Minecraft server service user";
+        }
+        account;
 
       lifecycle = {
         autostart = true;

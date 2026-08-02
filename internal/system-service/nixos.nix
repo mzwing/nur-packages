@@ -9,13 +9,15 @@
   accountConfig = lib.optionalAttrs (account != null && account.manage) {
     users.groups.${account.groupName} = account.platformAccount.groupConfig;
 
-    users.users.${account.userName} = lib.recursiveUpdate {
-      inherit (account) description;
-      isSystemUser = true;
-      group = account.groupName;
-      home = account.home;
-      createHome = account.createHome;
-    } account.platformAccount.userConfig;
+    users.users.${account.userName} =
+      lib.recursiveUpdate {
+        inherit (account) description;
+        isSystemUser = true;
+        group = account.groupName;
+        home = account.home;
+        createHome = account.createHome;
+      }
+      account.platformAccount.userConfig;
   };
 
   generatedService = {

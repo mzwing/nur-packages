@@ -7,31 +7,37 @@
 }: spec: let
   account = resolveAccount "darwin" spec.account;
   validUid =
-    account != null
+    account
+    != null
     && builtins.isInt account.platformAccount.uid
     && account.platformAccount.uid >= 502;
   validGid =
-    account != null
+    account
+    != null
     && builtins.isInt account.platformAccount.gid
     && account.platformAccount.gid >= 502;
   accountConfig = lib.optionalAttrs (account != null && account.manage) {
     users.knownGroups = [account.groupName];
     users.knownUsers = [account.userName];
 
-    users.groups.${account.groupName} = lib.recursiveUpdate {
-      gid = account.platformAccount.gid;
-      description = "${account.description} group";
-    } account.platformAccount.groupConfig;
+    users.groups.${account.groupName} =
+      lib.recursiveUpdate {
+        gid = account.platformAccount.gid;
+        description = "${account.description} group";
+      }
+      account.platformAccount.groupConfig;
 
-    users.users.${account.userName} = lib.recursiveUpdate {
-      uid = account.platformAccount.uid;
-      gid = account.platformAccount.gid;
-      inherit (account) description;
-      home = account.home;
-      createHome = account.createHome;
-      isHidden = account.platformAccount.isHidden;
-      shell = account.platformAccount.shell;
-    } account.platformAccount.userConfig;
+    users.users.${account.userName} =
+      lib.recursiveUpdate {
+        uid = account.platformAccount.uid;
+        gid = account.platformAccount.gid;
+        inherit (account) description;
+        home = account.home;
+        createHome = account.createHome;
+        isHidden = account.platformAccount.isHidden;
+        shell = account.platformAccount.shell;
+      }
+      account.platformAccount.userConfig;
   };
 
   keepAlive =
