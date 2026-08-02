@@ -1,4 +1,3 @@
 {
   cliproxyapiplus = ./cliproxyapiplus;
-  pumpkin = ./pumpkin;
 }
