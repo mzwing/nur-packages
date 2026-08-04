@@ -29,6 +29,7 @@ in {
   ace-ctx = pkgs.callPackage ./pkgs/ace-ctx {source = sources.ace-ctx;};
   autocli = pkgs.callPackage ./pkgs/autocli {source = sources.autocli;};
   cliproxyapiplus = pkgs.callPackage ./pkgs/cliproxyapiplus {source = sources.cliproxyapiplus;};
+  gryph = pkgs.callPackage ./pkgs/gryph {source = sources.gryph;};
   pumpkin = pkgs.callPackage ./pkgs/pumpkin {source = sources.pumpkin;};
   sing-box-alpha = pkgs.callPackage ./pkgs/sing-box-alpha {source = sources.sing-box-alpha;};
   sing-box-beta = pkgs.callPackage ./pkgs/sing-box-beta {source = sources.sing-box-beta;};
