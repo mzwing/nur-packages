@@ -74,9 +74,7 @@ def load_api_keys(paths: list[Path]) -> list[str]:
                         continue
                     keys.append(stripped)
         except (OSError, UnicodeError) as error:
-            raise ConfigError(
-                f"could not read API key file {path}: {error}"
-            ) from error
+            raise ConfigError(f"could not read API key file {path}: {error}") from error
     return keys
 
 
