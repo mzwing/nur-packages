@@ -9,12 +9,12 @@
   inherit (source) pname src;
   version = lib.removePrefix "v" source.version;
 
-  # _sources/pkgs/ace-ctx/Cargo.nix is generated with `crate2nix generate`
+  # ./Cargo.nix (next to this file) is generated with `crate2nix generate`
   # at the upstream source root by the update script
   # (scripts/package-updates) and committed to this repository. Building it
   # needs no crate2nix at evaluation or build time, only nixpkgs'
   # buildRustCrate.
-  cargoNix = import ../../_sources/pkgs/ace-ctx/Cargo.nix {
+  cargoNix = import ./Cargo.nix {
     inherit pkgs;
     defaultCrateOverrides =
       pkgs.defaultCrateOverrides

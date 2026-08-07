@@ -13,7 +13,7 @@
   inherit (source) pname src;
   version = lib.removePrefix "v" source.version;
 
-  cargoNixPath = ../../_sources/pkgs/autocli/Cargo.nix;
+  cargoNixPath = ./Cargo.nix;
 
   # Workspace members, derived from the generated Cargo.nix itself so this
   # list tracks upstream automatically when the update script regenerates
@@ -27,7 +27,7 @@
     autocli = "crates/autocli-cli";
   };
 
-  # _sources/pkgs/autocli/Cargo.nix is generated with `crate2nix generate`
+  # ./Cargo.nix (next to this file) is generated with `crate2nix generate`
   # at the upstream source root by the update script
   # (scripts/package-updates) and committed to this repository. Building it
   # needs no crate2nix at evaluation or build time, only nixpkgs'

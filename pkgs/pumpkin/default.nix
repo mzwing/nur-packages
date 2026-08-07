@@ -14,9 +14,9 @@
   # particular none of the ./crates/<name> path thunks, which do not exist
   # in this repository) is forced.
   workspaceCrates =
-    builtins.attrNames (import ../../_sources/pkgs/pumpkin/Cargo.nix {inherit pkgs;}).workspaceMembers;
+    builtins.attrNames (import ./Cargo.nix {inherit pkgs;}).workspaceMembers;
 
-  # _sources/pkgs/pumpkin/Cargo.nix is generated with `crate2nix generate`
+  # ./Cargo.nix (next to this file) is generated with `crate2nix generate`
   # at the upstream source root by the update script
   # (scripts/package-updates) and committed to this repository. Building it
   # needs no crate2nix at evaluation or build time, only nixpkgs'
@@ -36,7 +36,7 @@
       nativeBuildInputs = (attrs.nativeBuildInputs or []) ++ [rustfmt];
     });
 
-  cargoNix = import ../../_sources/pkgs/pumpkin/Cargo.nix {
+  cargoNix = import ./Cargo.nix {
     inherit pkgs;
     defaultCrateOverrides = crateOverrides;
   };
