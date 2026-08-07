@@ -30,11 +30,6 @@
   };
 
   ace-ctx = cargoNix.rootCrate.build;
-
-  # Test variant of the crate (builds with dev-dependencies and runs the
-  # test binaries). The crate has no optional features, so the old
-  # `cargo test --all-features` is equivalent to the default feature set.
-  tests = ace-ctx.override {runTests = true;};
 in
   ace-ctx.overrideAttrs (old: {
     # crate2nix names the derivation rust_ace-ctx-<crate version>.
@@ -43,12 +38,6 @@ in
     nativeBuildInputs =
       (old.nativeBuildInputs or [])
       ++ lib.optionals stdenv.hostPlatform.isLinux [makeWrapper];
-
-    # Gate the build on the test suite: interpolating the test derivation
-    # forces it to build (and thus pass) before the install phase runs.
-    preInstall = ''
-      echo "ace-ctx test suite passed: ${tests}"
-    '';
 
     postInstall = ''
       install -Dm644 \

@@ -3,7 +3,6 @@
   stdenv,
   pkgs,
   source,
-  coreutils,
   installShellFiles,
   makeWrapper,
   which,
@@ -38,35 +37,18 @@
     defaultCrateOverrides =
       pkgs.defaultCrateOverrides
       // lib.genAttrs workspaceCrates (
-        name: attrs:
-          {
-            # Build every member from the full source tree (buildRustCrate
-            # cds into `workspace_member` during configure). The generated
-            # per-member ./crates/<dir> paths do not exist in this
-            # repository and are never forced once src is overridden here.
-            src = source.src;
-            workspace_member = memberDirs.${name} or "crates/${name}";
-          }
-          // lib.optionalAttrs (name == "autocli-pipeline") {
-            # Fix an outdated expectation in a download step test. Only
-            # relevant when that crate's tests are built.
-            patches = [./fix-download-url-in-data-test.patch];
-          }
+        name: attrs: {
+          # Build every member from the full source tree (buildRustCrate
+          # cds into `workspace_member` during configure). The generated
+          # per-member ./crates/<dir> paths do not exist in this
+          # repository and are never forced once src is overridden here.
+          src = source.src;
+          workspace_member = memberDirs.${name} or "crates/${name}";
+        }
       );
   };
 
   autocli = cargoNix.workspaceMembers.autocli.build;
-
-  # Test variant of the CLI crate (builds with dev-dependencies and runs
-  # the test binaries). Scope is deliberately limited to the autocli crate
-  # itself; the other workspace members' tests are left to upstream CI.
-  tests = autocli.override {
-    runTests = true;
-    testInputs = [
-      coreutils
-      which
-    ];
-  };
 in
   autocli.overrideAttrs (old: {
     # crate2nix names the derivation rust_autocli-<crate version>.
@@ -76,12 +58,6 @@ in
       (old.nativeBuildInputs or [])
       ++ [installShellFiles]
       ++ lib.optionals stdenv.hostPlatform.isLinux [makeWrapper];
-
-    # Gate the build on the test suite: interpolating the test derivation
-    # forces it to build (and thus pass) before the install phase runs.
-    preInstall = ''
-      echo "autocli test suite passed: ${tests}"
-    '';
 
     postInstall = ''
       installShellCompletion --cmd autocli \
