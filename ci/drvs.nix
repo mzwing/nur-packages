@@ -10,9 +10,7 @@
 # saved to the GitHub Actions cache.
 #
 # Only instantiates derivations; nothing is built, so evaluating foreign
-# systems is fine. --impure is required because ci/default.nix reads
-# NUR_COMPILE_CACHE from the environment (which changes derivation hashes
-# when enabled; the workflow sets it globally).
+# systems is fine.
 let
   flake = builtins.getFlake "path:${toString ../.}";
   systems = import ../internal/systems.nix;

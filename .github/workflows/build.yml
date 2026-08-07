@@ -28,10 +28,6 @@ env:
   # job). If the secret is missing, both sides skip the builder store
   # cache gracefully.
   NUR_CI_CACHE_SIGNING_PUBLIC_KEY: nur-ci-cache-1:HPv21XHoMOnVhECgBAg1LOAHABVwfmrkER3TTX8h9VM=
-  # Enable the persistent GOCACHE compile cache in ci/default.nix (impure
-  # eval only). Rust dependency crates are separate cached derivations
-  # (crate2nix). Set to "0" to fall back to plain builds.
-  NUR_COMPILE_CACHE: "1"
 
 jobs:
   config:
@@ -118,7 +114,7 @@ jobs:
     # by the post-build hook; once the cache machine has signed it (within
     # about a minute) the other builders can substitute it. Remote builds
     # via ssh-ng read /etc/nix/nix.conf per session, so no daemon restart
-    # is needed (same as the compile cache setup below).
+    # is needed.
     - name: Configure builder store cache
       shell: bash
       run: |
@@ -155,34 +151,6 @@ jobs:
         connect-timeout = 5
         EOF
 
-    - name: Prepare compile cache directory
-      run: |
-        sudo mkdir -p /opt/nur-ci-compile-cache/gocache
-        # The cache restore tarball is extracted as the runner user, which
-        # must own these directories to chmod/utime them. The post-restore
-        # step re-opens permissions for the nixbld build users.
-        sudo chown -R "$(id -u):$(id -g)" /opt/nur-ci-compile-cache
-        sudo chmod -R 777 /opt/nur-ci-compile-cache
-        # Remote builds via ssh-ng read /etc/nix/nix.conf per session, so no
-        # daemon restart is needed (and macOS builds are unsandboxed anyway).
-        # The leading newline guards against a missing trailing newline in
-        # the previously appended config.
-        printf '\nextra-sandbox-paths = /opt/nur-ci-compile-cache\n' | sudo tee -a /etc/nix/nix.conf
-
-    # The key is unique per builder per run so saves never race and a bad
-    # cache can never block a recurring slot; restores pick the most recent
-    # cache for the same system (i.e. usually yesterday's, given daily runs).
-    - name: Restore compile cache
-      uses: actions/cache/restore@v6
-      with:
-        path: /opt/nur-ci-compile-cache
-        key: compile-cache-${{ matrix.system }}-${{ github.run_id }}-${{ github.run_attempt }}-${{ matrix.id }}
-        restore-keys: |
-          compile-cache-${{ matrix.system }}-
-
-    - name: Fix compile cache permissions
-      run: sudo chmod -R 777 /opt/nur-ci-compile-cache
-
     - name: Join builder network
       uses: tailscale/github-action@v4
       env:
@@ -216,21 +184,6 @@ jobs:
         done
         echo 'Coordinator did not claim this builder within 10 minutes.' >&2
         exit 1
-
-    - name: Fix compile cache permissions before save
-      if: always()
-      # Build users (nixbld*) create entries the runner user cannot read;
-      # and the archived modes must stay permissive so nixbld users can
-      # write to them again after the next restore.
-      run: sudo chmod -R 777 /opt/nur-ci-compile-cache
-
-    - name: Save compile cache
-      if: always()
-      continue-on-error: true
-      uses: actions/cache/save@v6
-      with:
-        path: /opt/nur-ci-compile-cache
-        key: compile-cache-${{ matrix.system }}-${{ github.run_id }}-${{ github.run_attempt }}-${{ matrix.id }}
 
   # Central store cache for the builders: a plain ssh-ng store on the
   # tailnet. Builders push every locally built path here via their
@@ -393,25 +346,6 @@ jobs:
         purge-prefixes: nix-builder-store-
         purge-last-accessed: P1D
         purge-primary-key: never
-
-    # The per-builder compile caches use unique keys per run, so stale
-    # entries from previous runs would otherwise accumulate until
-    # GitHub's 10GB LRU eviction. Entries saved by this run's builders
-    # (their keys contain the run id) are kept.
-    - name: Purge stale compile caches
-      if: always()
-      env:
-        GH_TOKEN: ${{ github.token }}
-      shell: bash
-      run: |
-        set -euo pipefail
-        gh cache list --limit 200 --json id,key |
-          jq -r --arg run_id '${{ github.run_id }}' '
-            .[]
-            | select(.key | startswith("compile-cache-"))
-            | select(.key | contains($run_id) | not)
-            | .id' |
-          xargs -r -n 1 gh cache delete
 
   coordinator:
     name: Distributed build coordinator
