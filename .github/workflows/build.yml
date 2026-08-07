@@ -21,8 +21,8 @@ env:
   CACHE_NAME: mzwing
   BUILDER_PREFIX: nur-b-${{ github.run_id }}-${{ github.run_attempt }}
   # Enable the persistent GOCACHE compile cache in ci/default.nix (impure
-  # eval only). Rust packages are cached via crane instead. Set to "0" to
-  # fall back to plain builds.
+  # eval only). Rust dependency crates are separate cached derivations
+  # (crate2nix). Set to "0" to fall back to plain builds.
   NUR_COMPILE_CACHE: "1"
 
 jobs:
@@ -288,7 +288,7 @@ jobs:
             --print-out-paths \
             --max-jobs 0 |
             while IFS= read -r path; do
-              printf -- '- `%s`\n' "${path}"
+              printf -- "- \`%s\`\n" "${path}"
             done
         } >>"${GITHUB_STEP_SUMMARY}"
 
