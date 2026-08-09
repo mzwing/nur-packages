@@ -42,8 +42,14 @@ jobs:
           restore-prefix: nix-ci-
           gc-max-store-size-linux: 4G
 
+      # No --no-build: evaluating the packages requires realising the
+      # fetched package sources (gomod2nix applies builtins.path to the
+      # fetched src at evaluation time). Those source paths live in the
+      # warm nix-ci- store cache saved by the update runs, but on a cold
+      # cache --no-build turns their absence into an evaluation error.
+      # The flake has no checks output, so nothing else gets built.
       - name: Check flake
-        run: nix flake check --all-systems --no-build --no-write-lock-file --show-trace
+        run: nix flake check --all-systems --no-write-lock-file --show-trace
 
       - name: Type-check Nix
         run: typenix --noEmit

@@ -8,6 +8,8 @@ on:
       - 'pkgs/**'
       - '_sources/**'
       - 'nvfetcher.toml'
+      - '.github/workflows/update.yml'
+      - '.github/workflows/tests.yml'
   workflow_dispatch:
 
 permissions:
