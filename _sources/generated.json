@@ -125,6 +125,26 @@
         },
         "version": "v0.7.0"
     },
+    "hfd": {
+        "cargoLock": null,
+        "date": "2026-06-22",
+        "extract": null,
+        "name": "hfd",
+        "passthru": null,
+        "pinned": false,
+        "src": {
+            "deepClone": false,
+            "fetchSubmodules": false,
+            "leaveDotGit": false,
+            "name": null,
+            "rev": "dcc19a065877cb1c75d22b7c5662845e8c8df203",
+            "sha256": "sha256-uy6HUlf4czUX0NyU+Rgu+4XPfUWQlIRD7cTe3XKZet0=",
+            "sparseCheckout": [],
+            "type": "git",
+            "url": "https://gist.github.com/padeoe/697678ab8e528b85a2a7bddafea1fa4f.git"
+        },
+        "version": "dcc19a065877cb1c75d22b7c5662845e8c8df203"
+    },
     "pumpkin": {
         "cargoLock": null,
         "date": "2026-08-10",

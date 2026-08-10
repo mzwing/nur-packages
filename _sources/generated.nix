@@ -73,6 +73,20 @@
       sha256 = "sha256-be4ybYX1BepEJ6T2ORHsC523jdzq6Oy/u6LD1zw6iNU=";
     };
   };
+  hfd = {
+    pname = "hfd";
+    version = "dcc19a065877cb1c75d22b7c5662845e8c8df203";
+    src = fetchgit {
+      url = "https://gist.github.com/padeoe/697678ab8e528b85a2a7bddafea1fa4f.git";
+      rev = "dcc19a065877cb1c75d22b7c5662845e8c8df203";
+      fetchSubmodules = false;
+      deepClone = false;
+      leaveDotGit = false;
+      sparseCheckout = [ ];
+      sha256 = "sha256-uy6HUlf4czUX0NyU+Rgu+4XPfUWQlIRD7cTe3XKZet0=";
+    };
+    date = "2026-06-22";
+  };
   pumpkin = {
     pname = "pumpkin";
     version = "366c9cb3234fd4a9e41c53c07c5c2c084ff473a3";
