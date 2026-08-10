@@ -159,12 +159,12 @@
             "name": null,
             "owner": "Pumpkin-MC",
             "repo": "Pumpkin",
-            "rev": "366c9cb3234fd4a9e41c53c07c5c2c084ff473a3",
-            "sha256": "sha256-viB6p5AEtPobfQgIl83SqiUPSDAmjmbukm+uncdfqSs=",
+            "rev": "2ffe470e2e64aef592c3c702dfa81bb8fe096b07",
+            "sha256": "sha256-viyLeEeopw1pH5NyG6pVVigRs3TzXkIV1NO2dJO2sWw=",
             "sparseCheckout": [],
             "type": "github"
         },
-        "version": "366c9cb3234fd4a9e41c53c07c5c2c084ff473a3"
+        "version": "2ffe470e2e64aef592c3c702dfa81bb8fe096b07"
     },
     "sing-box-alpha": {
         "cargoLock": null,
