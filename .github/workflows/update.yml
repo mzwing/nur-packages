@@ -117,6 +117,13 @@ jobs:
           sudo ln -sfn "${program}" "/nix/var/nix/gcroots/nur-ci-update/${app}"
         done
 
+    # Realise the devenv shell so its tools (typenix, actionlint, ruff,
+    # ...) ride along in the saved store for the tests job. devenv
+    # registers its own gcroots for the shell, so the GC below keeps it.
+    - name: Warm the devenv shell into the store cache
+      if: always()
+      run: devenv shell -- true
+
     - name: Commit and push changes
       uses: mzwing/nix-config/.github/actions/commit-and-push@master
       with:
@@ -124,6 +131,21 @@ jobs:
         message: 'chore: update packages'
         trigger-workflow: build.yml
         github-token: ${{ github.token }}
+
+    # Prune the store deterministically before the post-run save — the
+    # same treatment as the builder store cache in build.yml: keep the
+    # build closure of the current lock (drvs, fetched sources, and any
+    # outputs present, which is what the evaluating readers need) plus
+    # everything rooted above (the update toolchain, the devenv shell),
+    # and collect the rest. Without this the entry grows until
+    # cache-nix-action's size cap triggers a `nix store gc --max`, which
+    # evicts arbitrary unrooted paths. Runs after the commit so a GC
+    # failure can never block publishing the updates.
+    - name: Garbage-collect stale store paths
+      if: always()
+      uses: mzwing/nix-config/.github/actions/gc-store-to-build-closure@master
+      with:
+        gcroots-name: nur-ci-update-closure
 
     # actions/cache has no built-in purge, so prune old nvfetcher
     # databases manually: keep only the newest entry (the one the
