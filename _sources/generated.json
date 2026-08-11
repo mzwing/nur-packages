@@ -187,6 +187,27 @@
         },
         "version": "dcc19a065877cb1c75d22b7c5662845e8c8df203"
     },
+    "icalingua++": {
+        "cargoLock": null,
+        "date": null,
+        "extract": null,
+        "name": "icalingua++",
+        "passthru": null,
+        "pinned": false,
+        "src": {
+            "deepClone": false,
+            "fetchSubmodules": false,
+            "leaveDotGit": false,
+            "name": null,
+            "owner": "Icalingua-plus-plus",
+            "repo": "Icalingua-plus-plus",
+            "rev": "v2.26.3",
+            "sha256": "sha256-+IlqvShDNz5h4TllGZ9/+NeNy79AvUASE8eaqlKcZC4=",
+            "sparseCheckout": [],
+            "type": "github"
+        },
+        "version": "v2.26.3"
+    },
     "pumpkin": {
         "cargoLock": null,
         "date": "2026-08-10",
