@@ -216,7 +216,9 @@ jobs:
           rsync -a /nix/attic-checkpoint/ /nix/attic-data/
           echo 'Adopted a mid-run checkpoint Attic generation.'
         fi
-        rm -rf /nix/attic-checkpoint
+        # /nix itself is root-owned, so only the runner-owned contents are
+        # removable; the (re-populated) directory stays for the later save.
+        find /nix/attic-checkpoint -mindepth 1 -delete
 
     - name: Join cache network
       uses: mzwing/nix-config/.github/actions/join-ci-tailnet@master
