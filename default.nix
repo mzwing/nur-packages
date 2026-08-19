@@ -9,8 +9,7 @@
 {pkgs ? import <nixpkgs> {}}: let
   discover = import ./internal/discover.nix {inherit (pkgs) lib;};
   sources = pkgs.callPackage ./_sources/generated.nix {};
-  # Packages under pkgs/ are wired automatically; see internal/discover.nix
-  # for the argument injection rules and the exception table semantics.
+  # Auto-wire packages under pkgs/; `extraArgs` handles exceptions.
   packages = discover.packages {
     inherit pkgs sources;
     dir = ./pkgs;
@@ -20,8 +19,7 @@
   };
 in
   {
-    # The `lib`, `overlays`, `nixosModules`, `homeModules`,
-    # `darwinModules` and `flakeModules` names are special
+    # Reserved NUR exports.
     lib = import ./lib {inherit pkgs;}; # functions
     nixosModules = import ./nixos-modules; # NixOS modules
     homeModules = import ./home-modules; # Home Manager modules
@@ -29,7 +27,7 @@ in
     # flakeModules = { }; # flake-parts modules
     overlays = import ./overlays; # nixpkgs overlays
 
-    # Nested package sets without a top-level default.nix stay explicit.
+    # Explicit nested package set.
     vscode-extensions = pkgs.lib.recurseIntoAttrs {
       ryanrasti = pkgs.lib.recurseIntoAttrs {
         typenix = pkgs.callPackage ./pkgs/vscode-extensions/ryanrasti/typenix {
