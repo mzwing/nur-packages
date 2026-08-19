@@ -24,7 +24,6 @@
   zip,
   writeText,
   writeShellApplication,
-  cacert,
   coreutils,
   curl,
   jq,
@@ -63,28 +62,12 @@
     } or "linux_x64";
 
   npmDepsHash = "sha256-+W0K9ETI4yZxzDkMZmYn1Ks2ha6qvFpkYnTQpimFadY=";
-  npmDeps =
-    (fetchNpmDeps {
-      inherit pname version src;
-      hash = npmDepsHash;
-      # Cache registry metadata needed by npm overrides.
-      fetcherVersion = 2;
-    }).overrideAttrs (prev: {
-      nativeBuildInputs =
-        (prev.nativeBuildInputs or [])
-        ++ [
-          nodejs_24
-          cacert
-        ];
-      # Repair missing lockfile URLs and hashes before offline prefetching.
-      postUnpack =
-        (prev.postUnpack or "")
-        + ''
-          export NODE_EXTRA_CA_CERTS=${cacert}/etc/ssl/certs/ca-bundle.crt
-          # postUnpack runs outside `$sourceRoot`.
-          node ${./repair-lockfile.mjs} "$sourceRoot/package-lock.json"
-        '';
-    });
+  npmDeps = fetchNpmDeps {
+    inherit pname version src;
+    hash = npmDepsHash;
+    # Cache registry metadata needed by npm overrides.
+    fetcherVersion = 2;
+  };
 
   # Runtime metadata expected by the upstream local-build installer.
   runtimeJson = writeText "runtime.json" (builtins.toJSON {
