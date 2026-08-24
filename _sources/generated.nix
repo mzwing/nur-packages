@@ -143,6 +143,17 @@
       sha256 = "sha256-+IlqvShDNz5h4TllGZ9/+NeNy79AvUASE8eaqlKcZC4=";
     };
   };
+  magic-context = {
+    pname = "magic-context";
+    version = "v0.39.0";
+    src = fetchFromGitHub {
+      owner = "cortexkit";
+      repo = "magic-context";
+      rev = "v0.39.0";
+      fetchSubmodules = false;
+      sha256 = "sha256-42eamPU7+MXeQbAs+n6VSzKYSZyej/XYHk7RK5uDiuw=";
+    };
+  };
   manboster = {
     pname = "manboster";
     version = "v0.2.3";
