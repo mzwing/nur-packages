@@ -143,6 +143,17 @@
       sha256 = "sha256-+IlqvShDNz5h4TllGZ9/+NeNy79AvUASE8eaqlKcZC4=";
     };
   };
+  kelivo = {
+    pname = "kelivo";
+    version = "v1.2.3";
+    src = fetchFromGitHub {
+      owner = "Chevey339";
+      repo = "kelivo";
+      rev = "v1.2.3";
+      fetchSubmodules = false;
+      sha256 = "sha256-wTlHFJizR4aNm/TJbewKZPKwe01PYOGkXkM/Qsax71o=";
+    };
+  };
   magic-context = {
     pname = "magic-context";
     version = "v0.39.0";

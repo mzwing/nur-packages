@@ -20,6 +20,7 @@ mzwing's [NUR](https://github.com/nix-community/NUR) packages.
 | `haru` | [Usage](https://github.com/HyacinthHaru/haru) |
 | `hfd` | [Usage](https://gist.github.com/padeoe/697678ab8e528b85a2a7bddafea1fa4f) |
 | `icalingua++` | [Usage](https://github.com/Icalingua-plus-plus/Icalingua-plus-plus) |
+| `kelivo` | [Usage](https://github.com/Chevey339/kelivo) |
 | `magic-context` | [Usage](https://github.com/cortexkit/magic-context) |
 | `manboster` | [Usage](https://github.com/manboster/manboster) |
 | `manboster-beta` | [Usage](https://github.com/manboster/manboster) |

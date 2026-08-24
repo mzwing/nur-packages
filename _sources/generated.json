@@ -250,6 +250,27 @@
         },
         "version": "v2.26.3"
     },
+    "kelivo": {
+        "cargoLock": null,
+        "date": null,
+        "extract": null,
+        "name": "kelivo",
+        "passthru": null,
+        "pinned": false,
+        "src": {
+            "deepClone": false,
+            "fetchSubmodules": false,
+            "leaveDotGit": false,
+            "name": null,
+            "owner": "Chevey339",
+            "repo": "kelivo",
+            "rev": "v1.2.3",
+            "sha256": "sha256-wTlHFJizR4aNm/TJbewKZPKwe01PYOGkXkM/Qsax71o=",
+            "sparseCheckout": [],
+            "type": "github"
+        },
+        "version": "v1.2.3"
+    },
     "magic-context": {
         "cargoLock": null,
         "date": null,
