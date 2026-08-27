@@ -39,6 +39,17 @@
       sha256 = "sha256-egTJqfNW3gx+Aq+vjSrYriOPgHy6SR79LrxlQGDy510=";
     };
   };
+  claude-hud = {
+    pname = "claude-hud";
+    version = "v0.8.0";
+    src = fetchFromGitHub {
+      owner = "jarrodwatts";
+      repo = "claude-hud";
+      rev = "v0.8.0";
+      fetchSubmodules = false;
+      sha256 = "sha256-2Oo5cI8Xq0MgRkDshJ9Ls56n6++975R4+fqNJpF0ZCQ=";
+    };
+  };
   cliproxyapiplus = {
     pname = "cliproxyapiplus";
     version = "v7.2.127-7";
