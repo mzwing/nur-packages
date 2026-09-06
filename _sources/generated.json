@@ -146,6 +146,27 @@
         },
         "version": "v2.3.5"
     },
+    "cloudflarewarpspeedtest": {
+        "cargoLock": null,
+        "date": null,
+        "extract": null,
+        "name": "cloudflarewarpspeedtest",
+        "passthru": null,
+        "pinned": false,
+        "src": {
+            "deepClone": false,
+            "fetchSubmodules": false,
+            "leaveDotGit": false,
+            "name": null,
+            "owner": "puzige",
+            "repo": "CloudflareWarpSpeedTest",
+            "rev": "v1.5.15",
+            "sha256": "sha256-xCXFx7jkc4hIeXCtlTaMAaT7/+ocDjFRZ01czcL5+oE=",
+            "sparseCheckout": [],
+            "type": "github"
+        },
+        "version": "v1.5.15"
+    },
     "codegraph": {
         "cargoLock": null,
         "date": null,

@@ -83,6 +83,17 @@
       sha256 = "sha256-C/LvXIC2ng5FtEDMhoxilTayKVplJfzD27QLT7pbSVY=";
     };
   };
+  cloudflarewarpspeedtest = {
+    pname = "cloudflarewarpspeedtest";
+    version = "v1.5.15";
+    src = fetchFromGitHub {
+      owner = "puzige";
+      repo = "CloudflareWarpSpeedTest";
+      rev = "v1.5.15";
+      fetchSubmodules = false;
+      sha256 = "sha256-xCXFx7jkc4hIeXCtlTaMAaT7/+ocDjFRZ01czcL5+oE=";
+    };
+  };
   codegraph = {
     pname = "codegraph";
     version = "v1.6.0";
