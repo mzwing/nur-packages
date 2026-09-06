@@ -72,6 +72,17 @@
       sha256 = "sha256-T4SmrOM98U4WoDM1U01OFEd9LvfVRf+dTa+Z+FQH2AM=";
     };
   };
+  cloudflarespeedtest = {
+    pname = "cloudflarespeedtest";
+    version = "v2.3.5";
+    src = fetchFromGitHub {
+      owner = "XIU2";
+      repo = "CloudflareSpeedTest";
+      rev = "v2.3.5";
+      fetchSubmodules = false;
+      sha256 = "sha256-C/LvXIC2ng5FtEDMhoxilTayKVplJfzD27QLT7pbSVY=";
+    };
+  };
   codegraph = {
     pname = "codegraph";
     version = "v1.6.0";
