@@ -167,6 +167,21 @@
         },
         "version": "v1.5.15"
     },
+    "cnb-cli": {
+        "cargoLock": null,
+        "date": null,
+        "extract": null,
+        "name": "cnb-cli",
+        "passthru": null,
+        "pinned": false,
+        "src": {
+            "name": null,
+            "sha256": "sha256-wN+hksPnqiz4xUMXq7dX6we+zOvLCeAO7tw/+J/oR/Q=",
+            "type": "url",
+            "url": "https://registry.npmjs.org/@cnbcool/cnb-cli/-/cnb-cli-1.16.19.tgz"
+        },
+        "version": "1.16.19"
+    },
     "codegraph": {
         "cargoLock": null,
         "date": null,

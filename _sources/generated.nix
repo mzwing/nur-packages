@@ -94,6 +94,14 @@
       sha256 = "sha256-xCXFx7jkc4hIeXCtlTaMAaT7/+ocDjFRZ01czcL5+oE=";
     };
   };
+  cnb-cli = {
+    pname = "cnb-cli";
+    version = "1.16.19";
+    src = fetchurl {
+      url = "https://registry.npmjs.org/@cnbcool/cnb-cli/-/cnb-cli-1.16.19.tgz";
+      sha256 = "sha256-wN+hksPnqiz4xUMXq7dX6we+zOvLCeAO7tw/+J/oR/Q=";
+    };
+  };
   codegraph = {
     pname = "codegraph";
     version = "v1.6.2";
