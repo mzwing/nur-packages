@@ -309,13 +309,13 @@
   };
   subs-check-pro = {
     pname = "subs-check-pro";
-    version = "v3.3.0";
+    version = "v3.4.0";
     src = fetchFromGitHub {
       owner = "sinspired";
       repo = "subs-check-pro";
-      rev = "v3.3.0";
+      rev = "v3.4.0";
       fetchSubmodules = false;
-      sha256 = "sha256-HVc59aMirm9pnFGYlm+5CHYuskSFv0SeVsOYRJ5wCuY=";
+      sha256 = "sha256-hOJtsCJRVGbUbrEhV3IDWNfxjqr9a/ii4NImYg/nG2M=";
     };
   };
   tree-sitter-nix = {
